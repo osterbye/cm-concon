@@ -1,7 +1,7 @@
 #include "modem.h"
-#include <qofonoconnectioncontext.h>
-#include <qofonoconnectionmanager.h>
-#include <qofonomodem.h>
+#include <qofono-qt5/qofonoconnectioncontext.h>
+#include <qofono-qt5/qofonoconnectionmanager.h>
+#include <qofono-qt5/qofonomodem.h>
 
 #include <QDebug>
 
