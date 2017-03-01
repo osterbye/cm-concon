@@ -7,7 +7,6 @@ QMAKE_CXXFLAGS += --sysroot=$${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6
 QMAKE_LFLAGS -= --sysroot=$$[QT_SYSROOT]
 QMAKE_LFLAGS += --sysroot=$${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6
 INCLUDEPATH += $${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6/usr/include
-#INCLUDEPATH += $${YOCTO_BUILD_DIR}/tmp/sysroots/apalis-imx6/usr/include/qofono-qt5
 }
 
 QT += core dbus
@@ -19,18 +18,20 @@ CONFIG -= app_bundle
 TARGET = concond
 TEMPLATE = app
 
-LIBS +=  -lqofono-qt5
+LIBS +=  -lqofono-qt5 -lconnman-qt5
 
 # files
 SOURCES += main.cpp \
     connectioncontrol.cpp \
     ofonohandler.cpp \
-    modem.cpp
+    modem.cpp \
+    networkcounter.cpp
 
 HEADERS += \
     connectioncontrol.h \
     ofonohandler.h \
-    modem.h
+    modem.h \
+    networkcounter.h
 
 # install
 target.path = /usr/bin
