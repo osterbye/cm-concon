@@ -17,19 +17,20 @@
 ****************************************************************************/
 
 #include "networkcounter.h"
-#include <counter.h>
-#include <networkservice.h>
+#include <connman-qt5/counter.h>
 #include <QtCore>
 
 NetworkCounter::NetworkCounter(QObject *parent) :
     QObject(parent)
 {
+    m_bytes = 0;
+
     counter = new Counter(this);
 
     connect(counter,SIGNAL(counterChanged(QString,QVariantMap,bool)),this,SLOT(counterChanged(QString,QVariantMap,bool)));
     connect(counter,SIGNAL(bytesReceivedChanged(quint64)),this,SLOT(bytesReceivedChanged(quint64)));
     connect(counter,SIGNAL(bytesTransmittedChanged(quint64)),this,SLOT(bytesTransmittedChanged(quint64)));
-    connect(counter,SIGNAL(secondsOnlineChanged(quint64)),this,SLOT(secondsOnlineChanged(quint64)));
+    connect(counter,SIGNAL(secondsOnlineChanged(quint32)),this,SLOT(secondsOnlineChanged(quint32)));
     connect(counter,SIGNAL(roamingChanged(bool)),SLOT(roamingChanged(bool)));
 
     counter->setRunning(true);
@@ -38,15 +39,20 @@ NetworkCounter::NetworkCounter(QObject *parent) :
 void NetworkCounter::counterChanged(const QString servicePath, const QVariantMap &counters,  bool roaming)
 {
     QTextStream out(stdout);
-    NetworkService service;
-    service.setPath(servicePath);
-
-    out << service.name()
+    out << servicePath
         << (roaming ? "  roaming" : "  home")
         << "   bytes received: " << counters["RX.Bytes"].toUInt()
         << "   bytes transmitted: " << counters["TX.Bytes"].toUInt()
         << "   seconds: " << counters["Time"].toUInt()
         << endl;
+
+    if (counters["TX.Bytes"].toUInt() > 0) {
+        qreal mbps = (qreal)((counters["TX.Bytes"].toUInt()*8 - m_bytes*8)/1024.0/1024.0);
+        out << "Mbit/s: " << mbps << endl;
+        m_bytes = counters["TX.Bytes"].toUInt();
+    } else {
+        m_bytes = 0;
+    }
 }
 
 void NetworkCounter::bytesReceivedChanged(quint64 bytesRx)
@@ -61,7 +67,7 @@ void NetworkCounter::bytesTransmittedChanged(quint64 bytesTx)
     out  << Q_FUNC_INFO << " " << bytesTx << endl;
 }
 
-void NetworkCounter::secondsOnlineChanged(quint64 seconds)
+void NetworkCounter::secondsOnlineChanged(quint32 seconds)
 {
     QTextStream out(stdout);
     out << Q_FUNC_INFO << " " << seconds << endl;

@@ -20,7 +20,8 @@
 #define NETWORKCOUNTER_H
 
 #include <QObject>
-#include <counter.h>
+
+class Counter;
 
 class NetworkCounter : public QObject
 {
@@ -37,11 +38,12 @@ public Q_SLOTS:
 
     void bytesTransmittedChanged(quint64 bytesTx);
 
-    void secondsOnlineChanged(quint64 seconds);
+    void secondsOnlineChanged(quint32 seconds);
 
     void roamingChanged(bool roaming);
 private:
     Counter *counter;
+    quint64 m_bytes;
 
 };
 

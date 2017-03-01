@@ -4,6 +4,7 @@
 #include <QObject>
 
 class OfonoHandler;
+class NetworkCounter;
 
 class ConnectionControl : public QObject
 {
@@ -17,6 +18,7 @@ public slots:
 
 private:
     OfonoHandler *m_ofono;
+    NetworkCounter *m_counter;
 };
 
 #endif // CONNECTIONCONTROL_H
